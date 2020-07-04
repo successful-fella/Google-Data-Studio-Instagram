@@ -8,20 +8,22 @@
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 	$headers = [
-	    ':authority: 0',
-	    'X-Apple-Store-Front: 143444,12',
-	    'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-	    'Accept-Encoding: gzip, deflate',
-	    'Accept-Language: en-US,en;q=0.5',
-	    'Cache-Control: no-cache',
-	    'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
-	    'Host: www.example.com',
-	    'Referer: http://www.example.com/index.php', //Your referrer address
-	    'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0',
-	    'X-MicrosoftAjax: Delta=true'
+	    'authority: www.instagram.com',
+	    'method: GET',
+	    "path: /$username/?__a=1",
+	    'scheme: https',
+	    'accept: application/json, text/plain, */*',
+		// 'accept-encoding: gzip, deflate, br',
+	    'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,hi;q=0.7',
+	    'origin: http://localhost',
+		'referer: http://localhost/instagram',
+		'sec-fetch-dest: empty',
+		'sec-fetch-mode: cors',
+		'sec-fetch-site: cross-site',
+		'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
 	];
 
-	// curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 	$server_output = curl_exec($ch);
 
