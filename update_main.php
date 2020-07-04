@@ -4,7 +4,7 @@
 
 	$instagram_graph_url = "https://www.instagram.com/graphql/query/";
 
-	function addRow($username, $followers, $followings, $media) {
+	function addRow($username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3) {
 		$client = new \Google_Client();
 		$client->setApplicationName('My PHP App');
 		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
@@ -15,7 +15,7 @@
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
 		$range = 'A2:H';
 		$values = [
-		    [$username, $followers, $followings, $media, date('Y-m-d')]
+		    [$username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3, date('Y-m-d')]
 		];
 		$body = new Google_Service_Sheets_ValueRange([
 		    'values' => $values
@@ -42,15 +42,35 @@
 
 	function getMedia($user_id) {
 		global $instagram_graph_url;
-		$query = '?query_hash=f2405b236d85e8296cf30347c9f08c2a&variables={"id":"'.$user_id.'","first":24}';
+		$query = '?query_hash=f2405b236d85e8296cf30347c9f08c2a&variables={"id":"'.$user_id.'","first":3}';
 		$result = json_decode(file_get_contents($instagram_graph_url.$query));
-		return $result->data->user->edge_owner_to_timeline_media->count;
+		return $result;
 	}
 
-	function getIDs() {
+	function getIDsOld() {
 		$id_json = file_get_contents(__DIR__.'/accounts.json');
 		$id_arr = json_decode($id_json, true);
 		return $id_arr;
+	}
+
+	function getIDs() {
+		$client = new \Google_Client();
+		$client->setApplicationName('My PHP App');
+		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+		$client->setAccessType('offline');
+		$json = file_get_contents(__DIR__.'/excelapi.json');
+		$client->setAuthConfig(json_decode($json, true));
+		$sheets = new \Google_Service_Sheets($client);
+		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
+		$range = 'Usernames!A:B';
+		$response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
+		$values = $response->getValues();
+		array_shift($values);
+		$wanted_arr = array();
+		foreach ($values as $value) {
+			$wanted_arr[$value[1]] = $value[0];
+		}
+		return $wanted_arr;
 	}
 
 	$ids = getIDs();
@@ -59,7 +79,12 @@
 		$followers = getFollowers($id);
 		$followings = getFollowings($id);
 		$media = getMedia($id);
-		addRow($username, $followers, $followings, $media);
+		$media_count = $media->data->user->edge_owner_to_timeline_media->count;
+		$post_url = "https://www.instagram.com/p/";
+		$last_post1 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[0]->node->shortcode;
+		$last_post2 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[1]->node->shortcode;
+		$last_post3 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[2]->node->shortcode;
+		addRow($username, $followers, $followings, $media_count, $last_post1, $last_post2, $last_post3);
 	}
 
 	echo "Updated";
