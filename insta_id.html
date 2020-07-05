@@ -10,7 +10,8 @@
 </head>
 <body>
 
-	<button onclick="this.disabled = true; start()">Start</button><br>
+	<button onclick="this.disabled = true; start()">Start</button>
+	<button onclick="this.innerHTML='Please wait...';this.disabled=true;window.location.href='update.php'">Run Update</button><br>
 	<div id="spreadsheet"></div>
 
 	<script type="text/javascript">
