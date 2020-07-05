@@ -4,7 +4,7 @@
 
 	$instagram_graph_url = "https://www.instagram.com/graphql/query/";
 
-	function addRow($username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3) {
+	function addRow($id, $username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3) {
 		$client = new \Google_Client();
 		$client->setApplicationName('My PHP App');
 		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
@@ -15,7 +15,7 @@
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
 		$range = 'A2:H';
 		$values = [
-		    [$username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3, date('Y-m-d')]
+		    [$id, $username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3, date('Y-m-d')]
 		];
 		$body = new Google_Service_Sheets_ValueRange([
 		    'values' => $values
@@ -62,7 +62,7 @@
 		$client->setAuthConfig(json_decode($json, true));
 		$sheets = new \Google_Service_Sheets($client);
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
-		$range = 'Usernames!A:B';
+		$range = 'Usernames!B:C';
 		$response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
 		$values = $response->getValues();
 		array_shift($values);
@@ -70,6 +70,7 @@
 		foreach ($values as $value) {
 			$wanted_arr[$value[1]] = $value[0];
 		}
+		// print_r($wanted_arr);
 		return $wanted_arr;
 	}
 
@@ -84,7 +85,7 @@
 		$last_post1 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[0]->node->shortcode;
 		$last_post2 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[1]->node->shortcode;
 		$last_post3 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[2]->node->shortcode;
-		addRow($username, $followers, $followings, $media_count, $last_post1, $last_post2, $last_post3);
+		addRow($id, $username, $followers, $followings, $media_count, $last_post1, $last_post2, $last_post3);
 	}
 
 	echo "Updated";
