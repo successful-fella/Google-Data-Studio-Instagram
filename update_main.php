@@ -4,7 +4,10 @@
 
 	$instagram_graph_url = "https://www.instagram.com/graphql/query/";
 
-	function addRow($id, $username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3) {
+	$counter = 2;
+
+	function addRow($id, $username, $followers, $followings, $media, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3) {
+		global $counter;
 		$client = new \Google_Client();
 		$client->setApplicationName('My PHP App');
 		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
@@ -13,9 +16,9 @@
 		$client->setAuthConfig(json_decode($json, true));
 		$sheets = new \Google_Service_Sheets($client);
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
-		$range = 'A2:H';
+		$range = "A".$counter.":L";
 		$values = [
-		    [$id, $username, $followers, $followings, $media, $last_post1, $last_post2, $last_post3, date('Y-m-d')]
+		    [$id, $username, $followers, $followings, $media, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3, date('Y-m-d')]
 		];
 		$body = new Google_Service_Sheets_ValueRange([
 		    'values' => $values
@@ -23,7 +26,8 @@
 		$params = [
 		    'valueInputOption' => "USER_ENTERED"
 		];
-		$result = $sheets->spreadsheets_values->append($spreadsheetId, $range, $body, $params);
+		$result = $sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
+		$counter++;
 	}
 
 	function getFollowers($user_id) {
@@ -82,10 +86,13 @@
 		$media = getMedia($id);
 		$media_count = $media->data->user->edge_owner_to_timeline_media->count;
 		$post_url = "https://www.instagram.com/p/";
+		$post_date1 = date('Y-m-d', $media->data->user->edge_owner_to_timeline_media->edges[0]->node->taken_at_timestamp);
+		$post_date2 = date('Y-m-d', $media->data->user->edge_owner_to_timeline_media->edges[1]->node->taken_at_timestamp);
+		$post_date3 = date('Y-m-d', $media->data->user->edge_owner_to_timeline_media->edges[2]->node->taken_at_timestamp);
 		$last_post1 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[0]->node->shortcode;
 		$last_post2 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[1]->node->shortcode;
 		$last_post3 = $post_url . $media->data->user->edge_owner_to_timeline_media->edges[2]->node->shortcode;
-		addRow($id, $username, $followers, $followings, $media_count, $last_post1, $last_post2, $last_post3);
+		addRow($id, $username, $followers, $followings, $media_count, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3);
 	}
 
 	echo "Updated";
