@@ -24,8 +24,8 @@
             tableOverflow:true,
             columns: [
                 { type: 'text', title:'Instagram URL', width:600 },
-                { type: 'text', title:'ID', width:200 },
                 { type: 'text', title:'Username', width:200 },
+                { type: 'text', title:'ID', width:200 },
             ]
         });
 
@@ -50,8 +50,8 @@
 			$.ajax({
 				url: url+"?__a=1",
 				success: function(resp) {
-					spreadsheet.setValueFromCoords(1, counter-1, resp.graphql.user.id)
-					spreadsheet.setValueFromCoords(2, counter-1, resp.graphql.user.username)
+					spreadsheet.setValueFromCoords(1, counter-1, resp.graphql.user.username)
+					spreadsheet.setValueFromCoords(2, counter-1, resp.graphql.user.id)
 				},
 				complete: function() {
 					start()
