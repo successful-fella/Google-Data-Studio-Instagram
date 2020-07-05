@@ -6,15 +6,17 @@
 
 	$counter = 2;
 
+	$client = new \Google_Client();
+	$client->setApplicationName('My PHP App');
+	$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+	$client->setAccessType('offline');
+	$json = file_get_contents(__DIR__.'/excelapi.json');
+	$client->setAuthConfig(json_decode($json, true));
+	$sheets = new \Google_Service_Sheets($client);
+
 	function addRow($id, $username, $followers, $followings, $media, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3) {
 		global $counter;
-		$client = new \Google_Client();
-		$client->setApplicationName('My PHP App');
-		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
-		$client->setAccessType('offline');
-		$json = file_get_contents(__DIR__.'/excelapi.json');
-		$client->setAuthConfig(json_decode($json, true));
-		$sheets = new \Google_Service_Sheets($client);
+		global $sheets;
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
 		$range = "A".$counter.":L";
 		$values = [
@@ -58,13 +60,7 @@
 	}
 
 	function getIDs() {
-		$client = new \Google_Client();
-		$client->setApplicationName('My PHP App');
-		$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
-		$client->setAccessType('offline');
-		$json = file_get_contents(__DIR__.'/excelapi.json');
-		$client->setAuthConfig(json_decode($json, true));
-		$sheets = new \Google_Service_Sheets($client);
+		global $sheets;
 		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
 		$range = 'Usernames!B:C';
 		$response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
