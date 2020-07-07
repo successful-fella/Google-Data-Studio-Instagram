@@ -28,7 +28,11 @@
 		$params = [
 		    'valueInputOption' => "USER_ENTERED"
 		];
-		$result = $sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
+		try {
+			$sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
+		} catch(Exception $e) {
+			// Let go
+		}
 		$counter++;
 	}
 
