@@ -31,7 +31,7 @@
 		try {
 			$sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
 		} catch(Exception $e) {
-			// Let go
+			$counter--;
 		}
 		$counter++;
 	}
