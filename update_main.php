@@ -29,14 +29,17 @@
 		    'valueInputOption' => "USER_ENTERED"
 		];
 		if($counter % 100 == 0) {
-			sleep(60);
-		}
-		if($counter % 250 == 0) {
 			sleep(300);
 		}
 		try {
 			$sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
 		} catch(Exception $e) {
+			$error_arr = [[$id, $username]];
+			$body2 = new Google_Service_Sheets_ValueRange([
+			    'values' => $error_arr
+			]);
+			$range = "Dropped!A2:B";
+			$sheets->spreadsheets_values->append($spreadsheetId, $range, $body2, $params);
 			$counter--;
 		}
 		$counter++;
