@@ -29,7 +29,10 @@
 		    'valueInputOption' => "USER_ENTERED"
 		];
 		if($counter % 100 == 0) {
-			sleep(120);
+			sleep(60);
+		}
+		if($counter % 250 == 0) {
+			sleep(300);
 		}
 		try {
 			$sheets->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
