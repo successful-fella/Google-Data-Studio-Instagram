@@ -17,7 +17,7 @@
 	function addRow($id, $username, $followers, $followings, $media, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3) {
 		global $counter;
 		global $sheets;
-		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
+		$spreadsheetId = '1zCQel_Z0nyh3DV5HjZkOZabL5XdBAkmzKiY5o9bk-sk';
 		$range = "A".$counter.":L";
 		$values = [
 		    [$id, $username, $followers, $followings, $media, $post_date1, $last_post1, $post_date2, $last_post2, $post_date3, $last_post3, date('Y-m-d')]
@@ -74,7 +74,7 @@
 
 	function getIDs() {
 		global $sheets;
-		$spreadsheetId = '1P3XyPtUcRPHKNVhLbrAcvJ-vK5O_3YVQz7a3SpIP0nA';
+		$spreadsheetId = '1zCQel_Z0nyh3DV5HjZkOZabL5XdBAkmzKiY5o9bk-sk';
 		$range = 'Usernames!B:C';
 		$response = $sheets->spreadsheets_values->get($spreadsheetId, $range);
 		$values = $response->getValues();
